@@ -63,9 +63,12 @@ void loop() {
     
   kalmanFilter(); // We filter it and update our angles
 
-  Serial.print("Roll: "); Serial.print(radToDeg(phiX)); Serial.print(", ");
-  Serial.print("Pitch: "); Serial.print(radToDeg(phiY)); Serial.print(", ");
-  Serial.print("Yaw: "); Serial.println(radToDeg(phiZ)); 
+//  Serial.print("Roll: "); Serial.print(radToDeg(phiX)); Serial.print(", ");
+//  Serial.print("Pitch: "); Serial.print(radToDeg(phiY)); Serial.print(", ");
+//  Serial.print("Yaw: "); Serial.println(radToDeg(phiZ)); 
+  Serial.print("X-Bias: "); Serial.print(radToDeg(bx)); Serial.print(", ");
+  Serial.print("Y-Bias: "); Serial.print(radToDeg(by)); Serial.print(", ");
+  Serial.print("Z-Bias: "); Serial.print(radToDeg(bz)); Serial.println(", ");
 
 }
 
@@ -186,9 +189,9 @@ void kalmanFilter()
   //Model Prediction
 
   //State prediction
-  phiX = phiX - bx*dt + gyroX*dt;
-  phiY = phiY - by*dt + gyroY*dt;
-  phiZ = phiZ - bz*dt + gyroZ*dt;
+  phiX = phiX - bx*dt + (gyroX + sin(phiX)*tan(phiZ)*gyroY + cos(phiX)*tan(phiZ)*gyroZ)*dt;
+  phiY = phiY - by*dt + (cos(phiX)*gyroY - sin(phiZ)*gyroZ)*dt;
+  phiZ = phiZ - bz*dt + ((sin(phiX)/cos(phiZ))*gyroY + (cos(phiX)/cos(phiZ))*gyroZ)*dt;
 
   //Covariance prediction
 
